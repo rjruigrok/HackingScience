@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Rob Ruigrok">
+    <link rel="shortcut icon" href="http://tudelft.nl/favicon.ico">
+
+    <title>Paper in a Day</title>
+    <link href="bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
+  <style type="text/css" id="holderjs-style"></style></head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/web">Paper in a Day</a>
+        </div>
+        <div class="navbar-collapse collapse">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li id="menu2"><a href="#">Enter title of paper</a></li>
+            <li id="menu3"><a href="#">Parse the abstract</a></li>
+            <li id="menu4"><a href="#">Parse the bibtex</a></li>
+            <li id="menu5"><a href="#">Parse citations of initial paper</a></li>
+            <li id="menu6"><a href="#">Parse citations of cited pdf's</a></li>
+            <li id="menu7"><a href="#">Parse keywords of cited pdf's</a></li>
+            <li id="menu8"><a href="#">Download pdf's for citations of cited pdf's</a></li>
+            <li id="menu9"><a href="#">Select papers for including in the survey</a></li>
+            <li id="menu10"><a href="#">Enter author, institute, title and date</a></li>
+            <li id="menu11"><a href="#">Enter an abstract</a></li>
+            <li id="menu12"><a href="#">Generate IEEE-style LaTeX survey</a></li>
+
+          </ul>
+          </div>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Test Papergenerator</h1>
+
+            <div id="formmessage" class="text"><br /></div>
+            <pre id="formresult"> </pre>
+            <pre id="papertitle" style="display: none;"> </pre>
+            <input id="papertitlefield" class="form-control" placeholder="Title of the scientific paper" type="text" />
+
+            <input type="button" class="btn btn-success" id="papertitlebutton" value="Enter title" />
+
+            <input type="button" class="btn btn-success" id="parseabstract" value="Parse abstract" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="parsebibtex" value="Parse bibtex" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="parsecitations" value="Parse citations" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="parsekeywords" value="Parse keywords" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="parsecitationcites" value="Parse cited citations" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="downloadcitationcites" value="Download cited citations" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="selectpapers" value="Select papers" style="display: none;" />
+
+            <input id="newtitle" class="form-control" placeholder="Title of generated paper" type="text" style="display: none;" />
+            <input id="newauthors" class="form-control" placeholder="Authors of generated paper" type="text" style="display: none;" />
+            <input id="newdate" class="form-control" placeholder="Date of generated paper" type="text" style="display: none;" />
+            <input id="newinstitute" class="form-control" placeholder="Institute of generated paper" type="text" style="display: none;" />
+            <input type="button" class="btn btn-success" id="titleauthors" value="Title and author" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="writeabstract" value="Write abstract" style="display: none;" />
+
+            <input type="button" class="btn btn-success" id="generatepaper" value="Generate paper" style="display: none;" />
+
+          </div>
+        </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="jquery.bootstrap.wizard.js"></script>
+    <script src="jquery.cloud.min.js"></script>
+    <script src="docs.js"></script>
+    <script>
+
+      $(document).ready(function() {
+
+
+
+
+      // parse title
+      $('#papertitlebutton').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"parsepapertitle=" + encodeURIComponent(jQuery("#papertitlefield").val()),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#papertitlefield").hide();
+             jQuery("#papertitlebutton").hide();
+             jQuery("#parsetitle").hide();
+             jQuery("#parseabstract").show();
+             jQuery("#menu3").addClass("active");
+             jQuery("#menu2").removeClass("active");
+          }
+         });
+      });
+
+      // parse abstract
+      $('#parseabstract').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"parseabstract=" + jQuery("#papertitle").html(),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+
+             jQuery("#formresult").html(data.result);
+             jQuery("#parseabstract").hide();
+             jQuery("#parsebibtex").show();
+             jQuery("#menu4").addClass("active");
+             jQuery("#menu3").removeClass("active");
+         }
+         });
+      });
+
+      // parse bibtex
+      $('#parsebibtex').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"parsebibtex=" + jQuery("#papertitle").html(),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#parsebibtex").hide();
+             jQuery("#parsecitations").show();
+             jQuery("#menu5").addClass("active");
+             jQuery("#menu4").removeClass("active");
+         }
+         });
+      });
+
+      // parse citations
+      $('#parsecitations').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"parsecitations=" + jQuery("#papertitle").html(),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#parsecitations").hide();
+             jQuery("#parsecitationcites").show();
+             jQuery("#menu6").addClass("active");
+             jQuery("#menu5").removeClass("active");
+         }
+         });
+      });
+
+      // parse cited citations
+      $('#parsecitationcites').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"parsecitationcites=" + jQuery("#papertitle").html(),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#parsecitationcites").hide();
+             jQuery("#parsekeywords").show();
+             jQuery("#menu7").addClass("active");
+             jQuery("#menu6").removeClass("active");
+         }
+         });
+      });
+
+
+      // parse cited keywords
+      $('#parsekeywords').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"parsekeywords=1",
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#parsekeywords").hide();
+             jQuery("#downloadcitationcites").show();
+             jQuery("#menu8").addClass("active");
+             jQuery("#menu7").removeClass("active");
+         }
+         });
+      });
+
+      // download cited citations
+      $('#downloadcitationcites').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"downloadcitationcites=" + jQuery("#papertitle").html(),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#downloadcitationcites").hide();
+             jQuery("#selectpapers").show();
+             jQuery("#menu9").addClass("active");
+             jQuery("#menu8").removeClass("active");
+
+             // wordcloud
+            var settings = {
+            "size" : {
+                "grid" : 20, // word spacing, smaller is more tightly packed
+                "factor" : 0, // font resize factor, 0 means automatic
+                "normalize" : false // reduces outliers for more attractive output
+            },
+            "color" : {
+                "background" : "rgba(255,255,255,0)", // background color, transparent by default
+                "start" : "#20f", // color of the smallest font, if options.color = "gradient""
+                "end" : "rgb(200,0,0)" // color of the largest font, if options.color = "gradient"
+            },
+            "options" : {
+                "color" : "gradient", // if "random-light" or "random-dark", color.start and color.end are ignored
+                "rotationRatio" : 0.0, // 0 is all horizontal, 1 is all vertical
+                "printMultiplier" : 2, // set to 3 for nice printer output; higher numbers take longer
+                "sort" : "highest" // "highest" to show big words first, "lowest" to do small words first, "random" to not care
+            },
+            "font" : "Helvetica, Arial, sans-serif", // the CSS font-family string
+            "shape" : "circle" // the selected shape keyword, or a theta function describing a shape
+            }
+            $( "#wordcloud" ).awesomeCloud( settings );
+
+             }
+         });
+      });
+
+
+
+      // select papers
+      $('#selectpapers').click(function(e){
+
+        var papers = "";
+        $("input.selectpapers:checked").each(function(i) {
+          papers += $(this).val() + ",";
+        });
+        var subpapers = "";
+        $("input.selectsubpapers:checked").each(function(i) {
+          subpapers += $(this).val() + ",";
+        });
+
+        $.ajax({
+          type: "POST",
+          data:"selectpapers=" + papers + "&selectsubpapers=" + subpapers,
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#selectpapers").hide();
+             jQuery("#newtitle").show();
+             jQuery("#newauthors").show();
+             jQuery("#newinstitute").show();
+             jQuery("#newdate").show();
+             jQuery("#titleauthors").show();
+             jQuery("#menu10").addClass("active");
+             jQuery("#menu9").removeClass("active");
+             jQuery("#wordcloud").hide();
+         }
+         });
+      });
+
+      // paper title and authors
+      $('#titleauthors').click(function(e){
+        $.ajax({
+          type: "POST",
+          data: "newtitle=" + jQuery("#newtitle").val() + "&newauthors=" + jQuery("#newauthors").val() + "&newinstitute=" + jQuery("#newinstitute").val() + "&newdate=" + jQuery("#newdate").val() + "&titleauthors=" + jQuery("#papertitle").html(),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#titleauthors").hide();
+             jQuery("#newtitle").hide();
+             jQuery("#newauthors").hide();
+             jQuery("#newinstitute").hide();
+             jQuery("#newdate").hide();
+             jQuery("#writeabstract").show();
+             jQuery("#menu11").addClass("active");
+             jQuery("#menu10").removeClass("active");
+         }
+         });
+      });
+
+
+      // write abstract
+      $('#writeabstract').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"newabstract=" + encodeURIComponent(jQuery("#newabstract").html()),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             jQuery("#writeabstract").hide();
+             jQuery("#generatepaper").show();
+             jQuery("#menu12").addClass("active");
+             jQuery("#menu11").removeClass("active");
+         }
+         });
+      });
+
+
+      // generate paper
+      $('#generatepaper').click(function(e){
+        $.ajax({
+          type: "POST",
+          data:"latextemplate=" + encodeURIComponent(jQuery("#latextemplate").html()),
+          dataType: 'json',
+          url: "/action",
+          success: function(data)
+          {
+             jQuery("#formmessage").html(data.message);
+             jQuery("#formresult").html(data.result);
+             //jQuery("#generatepaper").hide();
+             //jQuery("#downloadcitationcites").show();
+             jQuery("#menu12").addClass("active");
+             jQuery("#menu11").removeClass("active");
+         }
+         });
+      });
+
+
+
+     });
+  </script>
+
+</body></html>
