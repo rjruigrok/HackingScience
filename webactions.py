@@ -118,6 +118,13 @@ def parseBibtex(papertitle):
         return "Connection error while parsing bibtex : %s" % err
 
 
+def parseBibtexRef(bibtex):
+    if bibtex is '':
+        return ''
+    firstsplit = bibtex.split("{")[1]
+    return firstsplit.split(",")[0]
+
+
 def parseCitations(papertitle):
     results = []
     try:

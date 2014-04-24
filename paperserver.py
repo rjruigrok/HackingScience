@@ -31,8 +31,11 @@ newtitle = "unknown"
 newdate = "unknown"
 newinstitute = "unknown"
 newabstract = "unknown"
+newconclusion = "unknown"
 
 latextemplate = "empty"
+bibtextemplate = "empty"
+bibtexitems = {}
 
 # output buffer disable to get better logging results
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
@@ -76,44 +79,36 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         global newdate
         global newinstitute
         global newabstract
+        global newconclusion
 
         global latextemplate
+        global bibtexitems
+        global bibtextemplate
 
         if self.path == "/action":
             for item in form.list:
                 print "%s=%s" % (item.name, item.value)
-                if item.name == "parsepapertitle":
+                if item.name == "papertitle":
                     source_title = item.value
-                    print source_title
-                    self.wfile.write(json.dumps({'message': "Title parsed from paper", 'result': source_title}))
-                    continue
-                if item.name == "parseabstract":
                     source_abstract = webactions.parseAbstract(source_title)
-                    self.wfile.write(json.dumps({'message': "Abstract parsed from paper", 'result': source_abstract}))
-                    continue
-                if item.name == "parsebibtex":
                     source_bibtex = webactions.parseBibtex(source_title)
-                    self.wfile.write(json.dumps({'message': "Bibtex parsed from paper", 'result': source_bibtex}))
-                    continue
-                if item.name == "parsecitations":
                     source_citations = webactions.parseCitations(source_title)
-                    output = ""
+
+                    citationsoutput = ""
                     for citation in source_citations:
-                        output += citation + "\n"
+                        citationsoutput += citation + "\n"
                         cited_pdfs_citation.append(citation)
                         title = webactions.get_first(re.compile('".*?"', re.DOTALL).findall(citation))
                         if title is None:
                             continue
                         title = title.replace('"', '')
                         cited_pdfs_title.append(title)
-                    self.wfile.write(json.dumps({'message': "Citations parsed from paper", 'result': output}))
-                    continue
-                if item.name == "parsecitationcites":
-                    output = ""
+
+                    citedcitationsoutput = ""
                     for title in cited_pdfs_title:
                         try:
                             subcitations = webactions.parseCitations(title)
-                            output += title + "\n"
+                            citedcitationsoutput += title + "\n"
                             for subcitation in subcitations:
                                 cited_cited_pdfs_citation.append(subcitation)
                                 title = webactions.get_first(re.compile('".*?"', re.DOTALL).findall(subcitation))
@@ -121,27 +116,12 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                                     continue
                                 title = title.replace('"', '')
                                 cited_cited_pdfs_title.append(title)
-                                output += " - " + title + "\n"
+                                citedcitationsoutput += " - " + title + "\n"
                                 #break
-                            output += "\n"
+                            citedcitationsoutput += "\n"
                             break
                         except TypeError:
                             print "Can't parse citations for paper " + title
-                    self.wfile.write(json.dumps({'message': "Citing citations parsed from paper", 'result': output}))
-
-                    #for citedfile in cited_pdfs:
-                    #    print "Parse cited file " + citedfile
-                    #    parsedtitle = webactions.parseTitle(citedfile)
-                    #    if "No such file" not in parsedtitle and "Could not convert PDF to XML" not in parsedtitle:
-                    #        output += parsedtitle + "\n"
-                    #        cited_pdfs_title.append(parsedtitle)
-                    #        cited_citations = webactions.parseCitations(parsedtitle)
-                    #        for citation in cited_citations:
-                    #            output += " - " + citation + "\n"
-
-                    #self.wfile.write(json.dumps({'message': "Titles parsed from cited papers", 'result': output}))
-                    continue
-                if item.name == "parsekeywords":
 
                     parse_keywords = webactions.parseKeywords(source_title)
                     if isinstance(parse_keywords, collections.Iterable):
@@ -152,7 +132,7 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                                 parsedkeywords[keyword] = 1
 
                     for i, title in enumerate(cited_pdfs_title):
-                        parse_keywords = webactions.parseKeywords(title)
+                        parse_keywords = {}#webactions.parseKeywords(title)
                         if isinstance(parse_keywords, collections.Iterable):
                             for keyword in parse_keywords:
                                 if keyword in parsedkeywords:
@@ -161,7 +141,7 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                                     parsedkeywords[keyword] = 1
                             #break
                     for i, title in enumerate(cited_cited_pdfs_title):
-                        parse_keywords = webactions.parseKeywords(title)
+                        parse_keywords = {} #webactions.parseKeywords(title)
                         if isinstance(parse_keywords, collections.Iterable):
                             for keyword in parse_keywords:
                                 if keyword in parsedkeywords:
@@ -169,12 +149,13 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                                 else:
                                     parsedkeywords[keyword] = 1
 
-                    output = ""
+                    keywordsoutput = ""
                     for key in parsedkeywords:
-                        output += "%d : %s\n" % (parsedkeywords[key], key)
-                    self.wfile.write(json.dumps({'message': "Keywords searched and downloaded from original and cited papers", 'result': output}))
+                        keywordsoutput += "%d : %s\n" % (parsedkeywords[key], key)
+
+                    self.wfile.write(json.dumps({'message': "Properties parsed from paper", 'result': "TITLE:\n%s\n\nABSTRACT:\n%s\n\nBIBTEX:\n%s\n\nCITATIONS:\n%s\n\nCITED CITATIONS:\n%s\nKEYWORDS:\n%s\n\n" % (source_title, source_abstract, source_bibtex, citationsoutput, citedcitationsoutput, keywordsoutput)}))
                     continue
-                if item.name == "downloadcitationcites":
+                if item.name == "showinfo":
                     output = ""
                     for i, title in enumerate(cited_pdfs_title):
                         output += '<input type="checkbox" class="selectpapers" name="selectpapers[]" value="%d" /> %s <br />' % (i, title)
@@ -191,11 +172,19 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     continue
                 if item.name == "selectpapers":
                     selectedpapers = item.value.split(",")
-                    #self.wfile.write(json.dumps({'message': "Not implemented", 'result': ""}))
                     continue
                 if item.name == "selectsubpapers":
                     selectedsubpapers = item.value.split(",")
-                    self.wfile.write(json.dumps({'message': "Papers selected", 'result': ", ".join(selectedpapers) + ", ".join(selectedsubpapers)}))
+                    continue
+                if item.name == "papersselected":
+                    output = ""
+                    output += '<input id="newtitle" class="form-control" placeholder="Title of generated paper" type="text" />'
+                    output += '<input id="newauthors" class="form-control" placeholder="Authors of generated paper" type="text" />'
+                    output += '<input id="newdate" class="form-control" placeholder="Date of generated paper" type="text" />'
+                    output += '<input id="newinstitute" class="form-control" placeholder="Institute of generated paper" type="text" />'
+                    output += '<textarea id="newabstract" name="newabstract" class="form-control" rows="10">%s</textarea>' % source_abstract
+                    output += '<textarea id="newconclusion" name="newconclusion" placeholder="Conclusion of generated paper" class="form-control" rows="10"></textarea>'
+                    self.wfile.write(json.dumps({'message': "Papers selected", 'result': output}))
                     continue
                 if item.name == "newinstitute":
                     newinstitute = item.value
@@ -209,48 +198,55 @@ class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 if item.name == "newdate":
                     newdate = item.value
                     continue
-                if item.name == "titleauthors":
-                    output = ""
-                    output += '<textarea id="newabstract" name="newabstract" class="form-control" rows="10">%s</textarea>' % source_abstract
-                    self.wfile.write(json.dumps({'message': "Updated title and authors<br />" + output, 'result': newtitle + "\n" + newinstitute + "\n" + newdate + "\n" + newauthors}))
-                    continue
                 if item.name == "newabstract":
                     newabstract = item.value
+                    continue
+                if item.name == "newconclusion":
+                    newconclusion = item.value
+                    continue
+                if item.name == "newinfo":
+                    #self.wfile.write(json.dumps({'message': output, 'result': ""}))
+                    continue
+                if item.name == "latextemplatecreate":
+                    bibtexitems = {}
                     content = ""
                     for i, title in enumerate(cited_pdfs_title):
-                        if i in selectedpapers:
-                            content += webactions.escapelatex(title) + "\n"
-                            content += webactions.escapelatex(webactions.parseAbstract(title)) + "\n\n\n"
+                        for j in selectedpapers:
+                            #print int(i) is int(j)
+                            if (j != '' and int(i) is int(j)):
+                                bibtexitem = ("%s\n\n") % webactions.parseBibtex(title).encode()
+                                bibtexref = webactions.parseBibtexRef(bibtexitem)
+                                bibtexitems[bibtexref] = bibtexitem
+                                content += "\section{%s}\n" % (webactions.escapelatex(title))
+                                content += "%s\n\cite{%s}\n\n\n" % (webactions.escapelatex(webactions.parseAbstract(title)), bibtexref)
+
                     for i, title in enumerate(cited_cited_pdfs_title):
-                        if i in selectedsubpapers:
-                            content += webactions.escapelatex(title) + "\n"
-                            content += webactions.escapelatex(webactions.parseAbstract(title)) + "\n\n\n"
+                        for j in selectedsubpapers:
+                            #print int(i) is int(j)
+                            if (j != '' and int(i) is int(j)):
+                                bibtexitem = ("%s\n\n") % webactions.parseBibtex(title).encode()
+                                bibtexref = webactions.parseBibtexRef(bibtexitem)
+                                bibtexitems[bibtexref] = bibtexitem
+                                content += "\section{%s}\n" % (webactions.escapelatex(title))
+                                content += "%s\n\cite{%s}\n\n\n" % (webactions.escapelatex(webactions.parseAbstract(title)), bibtexref)
 
-                    latextemplate = webactions.getlatex(webactions.escapelatex(newtitle), webactions.escapelatex(newabstract), webactions.escapelatex(newauthors), webactions.escapelatex(newinstitute), webactions.escapelatex(newdate), content)
+                    content += "\section{Conclusion}\n%s\n\n\n" % (webactions.escapelatex(newconclusion))
+
+                    latextemplate = webactions.getlatex(webactions.escapelatex(newtitle), webactions.escapelatex(newabstract), webactions.escapelatex(newauthors), webactions.escapelatex(newinstitute), webactions.escapelatex(newdate), content).encode()
+                    bibtextemplate = "\n\n\n".join('%s' % (bibtexitems[k]) for k in bibtexitems)
                     output = ""
-                    output += '<textarea id="latextemplate" name="latextemplate" class="form-control" rows="30">%s</textarea>' % latextemplate
+                    output += '<textarea id="latextemplate" name="latextemplate" class="form-control" rows="20">%s</textarea>' % latextemplate
+                    output += '<textarea id="bibtextemplate" name="bibtextemplate" class="form-control" rows="10">%s</textarea>' % bibtextemplate
 
-                    self.wfile.write(json.dumps({'message': "Abstract entered <br />" + output, 'result': newabstract}))
+                    self.wfile.write(json.dumps({'message': "New info parsed to LaTeX" + output, 'result': ""}))
                     continue
                 if item.name == "latextemplate":
                     latextemplate = item.value
-
-                    content = ""
-                    print "test"
-                    for i, title in enumerate(cited_pdfs_title):
-                        print i
-                        if i in selectedpapers:
-                            content += webactions.escapelatex(title) + "\n"
-                            content += webactions.escapelatex(webactions.parseAbstract(title)) + "\n\n\n"
-                    for i, title in enumerate(cited_cited_pdfs_title):
-                        if i in selectedsubpapers:
-                            content += webactions.escapelatex(title) + "\n"
-                            content += webactions.escapelatex(webactions.parseAbstract(title)) + "\n\n\n"
-
                     output = ""
-                    output += '<textarea id="latextemplate" name="latextemplate" class="form-control" rows="30">%s</textarea>' % latextemplate
-                    webactions.pdflatex(latextemplate, "")
-                    self.wfile.write(json.dumps({'message': '<a href="/generated/result.pdf" title="" class="btn btn-success" target="_blank">Download PDF</a>' + output, 'result': ""}))
+                    output += '<textarea id="latextemplate" name="latextemplate" class="form-control" rows="20">%s</textarea>' % latextemplate
+                    output += '<textarea id="bibtextemplate" name="bibtextemplate" class="form-control" rows="10">%s</textarea>' % bibtextemplate
+                    webactions.pdflatex(latextemplate, bibtextemplate)
+                    self.wfile.write(json.dumps({'message': output, 'result': ""}))
                     continue
 
     def do_GET(self):
