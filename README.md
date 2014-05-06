@@ -98,3 +98,4 @@ This project is open-source and dedicated to an application that prefabricates a
 ## Future work
 * The synchronization between the web-interface and web-server can be improved. A small change in the Python code requires a server restart and all progress in the web-interface is lost. It would be a nice feature to save the state in some database and make the web-interface interact with this database. 
 * Keyword similarity can be improved, by combining related keywords into one (like peer to peer', 'peer 2 peer', 'p2p', 'peer-to-peer', which are all the same). 
+* Extract all pictures from source papers and make them available for inclusion in the final paper. 
