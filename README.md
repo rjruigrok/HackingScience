@@ -3,7 +3,7 @@ Computer Aided Scientific Survey Prefabrication
 Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific article generator is created to make it trivial for any scientist to fake productivity. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a paper. 
 By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
 
-## Opposite of prior MIT work
+## Genuine, not fake
 In 2005, three graduate students at MIT developed [SCIgen](http://pdos.csail.mit.edu/scigen/]), an automatic paper generator in the field of Computer Science. It uses a context-free grammar to form the contents of the paper, and make it look genuine. The main purpose of SCIgen was to auto-generate submissions to conferences to check whether the program committee will accept it. And some papers got accepted, which proves that some conferences can't be taken seriously. 
 
 ![scigen](screenshots/scigen.png)
