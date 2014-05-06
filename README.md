@@ -1,6 +1,6 @@
-Computer Aided Scientific Survey Prefabrication
+Computer-Aided Scientific Survey Prefabrication
 ==============
-Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific article generator is created to make it trivial for any scientist to fake productivity. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a paper. 
+Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific article generator is created to make it easy to boost productivity. Any scientist should be able to write a genuine article in 24 hours using our tool. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a paper. 
 By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
 
 ## Opposite of prior MIT work
