@@ -61,7 +61,7 @@ After gathering all references to the related work, the scientist will make a se
 ## Prefabrication of a survey
 A scientific survey based on the previously made choices and downloaded information on referenced papers is prefabricated. This provides the opportunity to make any changes to the final result, and to generate a resulting PDF survey on-the-fly. 
 
-![example-scigen](screenshots/new-information.png)
+![new-info](screenshots/new-info.png)
 *Figure 6: Enter new information as metadata for the survey*
 
 ### Random text by Markov chain
@@ -77,10 +77,10 @@ Based on the preferences and selection of related work and keywords by the user,
 ### Transform LaTeX into PDF
 A special button is available to generate and download a PDF survey from the corresponding LaTeX. The building of a PDF is based on repeated executions of the **pdflatex** and **bibtex** in a temporary folder. 
 
-![example-scigen](screenshots/buttons.png)
+![example-buttons](screenshots/buttons.png)
 *Figure 8: Button to generate and download PDF file of the survey*
 
-![example-scigen](screenshots/example-pdf.png)
+![example-example-pdf](screenshots/example-pdf.png)
 *Figure 9: Generated resulting PDF*
 
 
