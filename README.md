@@ -60,6 +60,7 @@ After gathering all references to the related work, the scientist will make a se
 
 ## Prefabrication of a survey
 A scientific survey based on the previously made choices and downloaded information on referenced papers is prefabricated. This provides the opportunity to make any changes to the final result, and to generate a resulting PDF survey on-the-fly. 
+
 ![example-scigen](screenshots/new-information.png)
 *Figure 6: Enter new information as metadata for the survey*
 
