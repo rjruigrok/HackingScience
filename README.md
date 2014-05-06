@@ -1,7 +1,10 @@
-Computer Aided Scientific Survey Prefabrication
+Computer Aided Survey Writing
 ==============
 Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific article generator is created to make it trivial for any scientist to fake productivity. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a paper. 
 By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
+
+## Paper in a Day
+The approach for this project is not the same. The purpose of this project is to prefabricate a scientific survey based on an initial paper. The application will look for related work and references. The scientist will choose which of the related work should be included in the survey, and is able to change any content on-the-fly in LaTeX and BibTex. Faking productivity becomes easy, because the scientist does not need to look for any publications himself, but just needs to check which work should be included. Finally, a PDF survey is generated. 
 
 ## Genuine, not fake
 In 2005, three graduate students at MIT developed [SCIgen](http://pdos.csail.mit.edu/scigen/]), an automatic paper generator in the field of Computer Science. It uses a context-free grammar to form the contents of the paper, and make it look genuine. The main purpose of SCIgen was to auto-generate submissions to conferences to check whether the program committee will accept it. And some papers got accepted, which proves that some conferences can't be taken seriously. 
@@ -13,8 +16,6 @@ In 2005, three graduate students at MIT developed [SCIgen](http://pdos.csail.mit
 ![example-scigen](screenshots/example-scigen.png)
 *Figure 2: Example result of an automatically generated paper by SCIgen*
 
-
-The approach for this project is not the same. The purpose of this project is to prefabricate a scientific survey based on an initial paper. The application will look for related work and references. The scientist will choose which of the related work should be included in the survey, and is able to change any content on-the-fly in LaTeX and BibTex. Faking productivity becomes easy, because the scientist does not need to look for any publications himself, but just needs to check which work should be included. Finally, a PDF survey is generated. 
 
 ## Running the application
 * Clone the repository of HackingScience. 
@@ -37,19 +38,19 @@ Making references to other scientific work is essential, and all references shou
 ![example-scigen](screenshots/bibtex.png)
 *Figure 4: Results after parsing bibliography of a paper*
 
-### Referencing papers
+### Referencing Papers
 Creating a survey based on an initial paper requires related work to look for. The easiest way to get this related work, is looking for other scientific work that is refered by the initial paper. This related work can be found in the PDF references section, but as explained in the previous sectons, parsing a PDF directly results most of the times in crappy results. The solution for this problem is to look up these referenced papers online. For example, [Google Scholar](http://scholar.google.com) provides information on references made. Another source to get this information from is [Microsoft Academic Search](http://academic.research.microsoft.com/). But the problem with both of these sources is that they do not allow massive searching for references for large amounts of papers. Automated scraping of these services result in an IP-ban for some time. Both Google and Microsoft have an API service to look up the information, but unfortunately do not support searching for references made by a paper. To circumvent this problem, I implemented a parser for [IEEE Xplore Digital Library](http://ieeexplore.ieee.org/Xplore/home.jsp) that searches and scrapes all information on references for the scientific work. 
 ![example-scigen](screenshots/citations-keywords.png)
 *Figure 5: Results after parsing references of a paper*
 
 
-### Recursive parsing of referenced work
+### Recursive parsing of Referenced Work
 To make the survey prefabrication useful, a large set of related work should be presented to the scientist. This makes it possible to create a subselection for inclusion in the final survey. To get a large set of related work, recursive parsing of the references of the initial papers is applied. Currently it is implemented just one level deep, because it takes some time to request all the information of recursively parsed references. 
 
-### Keyword similarity
+### Interactive Survey Focus Determination
 To give the scientist a good overview of which scientific papers are relevant, and make a pre-selection of papers by grouping them on their keyword similarity. The keywords for a scientific work can be parsed along with the BibTex, and are also available from the search result on [IEEE Xplore Digital Library](http://ieeexplore.ieee.org/Xplore/home.jsp). The cool thing about this would be that similar papers will contain the same keywords. But this is not always the case which is a pity: a lot of spelling errors and keywords consisting of multiple words are used. E.g. 'peer to peer', 'peer 2 peer', 'p2p', 'peer-to-peer', we recognize them as the same, but the application doesn't. But for the purpose of the survey prefabrication selection, it is sufficient now. 
 
-### Abstract
+### Abstract creation
 After gathering all references to the related work, the scientist will make a selection on which references should be included as a separate section in the generated survey. After selecting these references, the paper is parsed from the reference and the abstract and bibtex entries are looked up. The information on the abstract can be parsed too from [IEEE Xplore Digital Library](http://ieeexplore.ieee.org/Xplore/home.jsp), and BibTex entries are currently gathered from [DBLP](http://dblp.uni-trier.de/db/). The abstracts are included in the final survey in the following way: 
 * the title of the referenced work forms the \section title. 
 * the abstract of the referenced work forms the section contents. 
