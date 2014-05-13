@@ -4,6 +4,11 @@ Computer Aided Survey Writing - Paper in a Day
 ## Introduction
 Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific survey writing tool is created to make it easier for any scientist to write a survey in less time. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a single initial paper. By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of the referenced papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
 
+
+![diagram_survey](screenshots/diagram_survey.png)
+*Diagram 1: A quick overview of the core modules for generating surveys*
+
+
 ### Running the application
 * Clone the repository of HackingScience. 
 * Start the server from commandline by ./run.sh start
