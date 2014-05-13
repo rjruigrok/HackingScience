@@ -1,12 +1,4 @@
-Computer-Aided Survey Writing
-==============
-
-# Running the application
-* Clone the repository of HackingScience. 
-* Start the server from commandline by ./run.sh start
-* Open a browser on url http://localhost:8000/web
-
-# Paper in a Day
+# Computer-Aided Survey Writing - Paper in a Day
 
 ## Introduction
 Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific survey writing tool is created to make it easier for any scientist to make it easy to boost productivity. Any scientist should be able to write a genuine article in 24 hours using our tool. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a single initial paper. By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of the referenced papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
@@ -107,3 +99,12 @@ This project is open-source and dedicated to an application that prefabricates a
 * Keyword similarity can be improved, by combining related keywords into one (like peer to peer', 'peer 2 peer', 'p2p', 'peer-to-peer', which are all the same). 
 * Extract all pictures from source papers and make them available for inclusion in the final paper. 
 * Keyword clustering (chapter) to apply a Survey Attack on Reputation systems (by means of a keyword table) is very hard to accomplish, because the keywords retrieved from papers differ a lot. E.g. it is possible to write a single keywords in various forms (peer-to-peer, p2p, ptp, peer to peer, etc.) which are essentially all the same, but not recognized as the same by this tool. 
+
+
+
+
+### Running the application
+* Clone the repository of HackingScience. 
+* Start the server from commandline by ./run.sh start
+* Open a browser on url http://localhost:8000/web
+
