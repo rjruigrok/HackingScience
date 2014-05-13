@@ -1,8 +1,8 @@
-Computer Aided Survey Writing - Paper in a Day
+Computer-Aided Survey Writing - Paper in a Day
 ==============
 
 ## Introduction
-Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific survey writing tool is created to make it easier for any scientist to write a survey in less time. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a single initial paper. By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of the referenced papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
+Scientists are under continuous pressure to create new scientific articles. For this purpose, a semiautomated scientific survey writing tool is created to make it easier for any scientist to make it easy to boost productivity. Any scientist should be able to write a genuine article in 24 hours using our tool. The idea is based on machine-generating a specific type of scientific paper, survey papers that include an overview of recent work in a single area. Related publications are collected by parsing the references of a single initial paper. By recursively following citations and downloading them from the web, a large set of related publications are gathered. This collection is then used to create a new article, by including the abstracts of the referenced papers. Finally, this generation tool is enhanced with the capability of citing articles in the collection and generating a bibliography file.
 
 
 ![diagram_survey](screenshots/diagram_survey.png)
