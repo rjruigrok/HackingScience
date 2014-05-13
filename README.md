@@ -6,6 +6,7 @@ Scientists are under continuous pressure to create new scientific articles. For 
 
 
 ![diagram_survey](screenshots/diagram_survey.png)
+
 *Diagram 1: A quick overview of the core modules for generating surveys*
 
 
